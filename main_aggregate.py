@@ -5,167 +5,23 @@ from torchvision import transforms
 from PIL import Image
 import numpy as np
 import json
-import datetime
+from utils import making_annotations_dic, making_images_dic, making_json
 
 THRESHOLD = 0.95
-
-
-def making_images_dic(id, file_name, size):
-    out = {
-        "coco_url": "http://localhost:8007/images/" + file_name,
-        "license": 1,
-        "file_name": file_name,
-        "height": size[0],
-        "width": size[1],
-        "date_captured": str(datetime.datetime.now()),
-        "flicker_url": "http://localhost:8007/images" + file_name,
-        "id": id
-    }
-    return out
-
-
-def making_annotations_dic(id, keys, boxes):
-    out = {
-        "id": id,
-        "num_keypoints": 21,
-        "category_id": 1,
-        "image_id": id,
-        "keypoints": keys,
-        "bbox": boxes,
-    }
-    return out
-
-
-def making_json(images, annotations):
-    out = {
-        "info": {
-        },
-        "licenses": [
-        ],
-        "images": images,
-        "annotations": annotations,
-        "categories": [
-            {
-                "supercategory": "person",
-                "id": 1,
-                "name": "person",
-                "keypoints": [
-                    "Top Head",
-                    "Nose",
-                    "Neck",
-                    "Chest",
-                    "right_shoulder",
-                    "right_elbow",
-                    "right_wrist",
-                    "left_shoulder",
-                    "left_elbow",
-                    "left_wrist",
-                    "left_hip",
-                    "left_knee",
-                    "left_ankle",
-                    "right_hip",
-                    "right_knee",
-                    "right_ankle",
-                    "right_big_toe",
-                    "right_heel",
-                    "left_big_toe",
-                    "left_heel",
-                    "golf_club_head"
-                ],
-                "skeleton": [
-                    [
-                        16,
-                        14
-                    ],
-                    [
-                        14,
-                        12
-                    ],
-                    [
-                        17,
-                        15
-                    ],
-                    [
-                        15,
-                        13
-                    ],
-                    [
-                        12,
-                        13
-                    ],
-                    [
-                        6,
-                        12
-                    ],
-                    [
-                        7,
-                        13
-                    ],
-                    [
-                        6,
-                        7
-                    ],
-                    [
-                        6,
-                        8
-                    ],
-                    [
-                        7,
-                        9
-                    ],
-                    [
-                        8,
-                        10
-                    ],
-                    [
-                        9,
-                        11
-                    ],
-                    [
-                        2,
-                        3
-                    ],
-                    [
-                        1,
-                        2
-                    ],
-                    [
-                        1,
-                        3
-                    ],
-                    [
-                        2,
-                        4
-                    ],
-                    [
-                        3,
-                        5
-                    ],
-                    [
-                        4,
-                        6
-                    ],
-                    [
-                        5,
-                        7
-                    ]
-                ]
-            }]
-    }
-
-    return out
 
 
 def main():
     model_key = models.detection.keypointrcnn_resnet50_fpn(pretrained=True)
     model_key.eval()
 
-    main_dir = 'data/'
+    main_dir = 'data/images/'
     file_list = os.listdir(main_dir)
 
     images_dic = []
     annotations_dic = []
 
+    annotation_id = 10000
+    
     for i, file_name in enumerate(file_list):
         data = Image.open(main_dir + file_name)
         transform = transforms.ToTensor()
@@ -210,7 +66,9 @@ def main():
                 for k in key:
                     keys.append(k)
             images_dic.append(making_images_dic(i, file_name, size))
-            annotations_dic.append(making_annotations_dic(i, keys, box))
+            annotations_dic.append(
+                making_annotations_dic(annotation_id, i, keys, box))
+            annotation_id += 1
 
     out = making_json(images_dic, annotations_dic)
 

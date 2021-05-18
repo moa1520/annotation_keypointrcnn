@@ -1,34 +1,30 @@
 import os
 import cv2
+import glob
 
 
-dir = 'C:/VC_golfdb/Golf Swing Videos/'
+dir = '/Users/taekyoungkang/Desktop/TK/dataset/'
 
-dir_list = os.listdir(dir)
+video_files = glob.glob(dir + "*.mp4")
 
-for main_dir in dir_list:
-    main_dir = dir + main_dir + '/'
+if not os.path.isdir('./data'):
+    os.makedirs('./data')
 
-# main_dir = 'C:/VC_golfdb/Golf Swing Videos/0c18ac27-004a-4825-9457-867351168f9f/'
-    file_list = os.listdir(main_dir)
+for video in video_files:
+    file_name = video.split('/')[-1]
+    save_dir = './data/' + file_name.split('.')[0]
+    if not os.path.isdir(save_dir):
+        os.makedirs(save_dir)
 
-    for file_name in file_list:
-        saved_dir = main_dir + file_name.split('.')[0] + '/'
-        if not os.path.isdir(saved_dir):
-            os.makedirs(saved_dir)
+    vidcap = cv2.VideoCapture(video)
 
-        vidcap = cv2.VideoCapture(main_dir + file_name)
-
-        count = 0
-
-        while vidcap.isOpened():
-            ret, image = vidcap.read()
-            if not ret:
-                break
-            if int(vidcap.get(1)) % 1 == 0:
-                print('Saved from number: ' + str(int(vidcap.get(1))))
-                image = cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE)
-                cv2.imwrite(saved_dir + 'frame%d.png' % count, image)
-                count += 1
-
-        vidcap.release()
+    count = 0
+    while vidcap.isOpened():
+        ret, image = vidcap.read()
+        if not ret:
+            break
+        if int(vidcap.get(1)) % 25 == 0:
+            print('Saved from number: ' + str(int(vidcap.get(1))))
+            cv2.imwrite(save_dir + '/frame_{}.png'.format(count), image)
+            count += 1
+    vidcap.release()
