@@ -11,31 +11,36 @@ THRESHOLD = 0.95
 
 
 def main():
-    model_key = models.detection.keypointrcnn_resnet50_fpn(pretrained=True)
-    model_key.eval()
+    model = models.detection.keypointrcnn_resnet50_fpn(pretrained=True)
+    model.eval()
 
-    main_dir = 'data/images/'
+    if torch.cuda.is_available():
+        model.cuda()
+
+    main_dir = 'data/'
     file_list = os.listdir(main_dir)
 
     images_dic = []
     annotations_dic = []
 
     annotation_id = 10000
-    
+
     for i, file_name in enumerate(file_list):
         data = Image.open(main_dir + file_name)
         transform = transforms.ToTensor()
         data = transform(data)
+        if torch.cuda.is_available():
+            data = data.cuda()
 
-        prediction = model_key([data])[0]
+        prediction = model([data])[0]
 
         for box, score, keypoints in zip(prediction['boxes'], prediction['scores'], prediction['keypoints']):
-            score = score.detach().numpy()
+            score = score.cpu().detach().numpy()
             if score < THRESHOLD:
                 continue
 
-            box = box.detach().numpy().tolist()
-            keypoints = keypoints.detach().numpy()
+            box = box.cpu().detach().numpy().tolist()
+            keypoints = keypoints.cpu().detach().numpy()
 
             # 목 추가
             neck = np.append(
