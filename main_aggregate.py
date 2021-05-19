@@ -17,7 +17,7 @@ def main():
     if torch.cuda.is_available():
         model.cuda()
 
-    main_dir = 'data/'
+    main_dir = 'data/images/'
     file_list = os.listdir(main_dir)
 
     images_dic = []
@@ -34,6 +34,7 @@ def main():
 
         prediction = model([data])[0]
 
+        images_id = set()
         for box, score, keypoints in zip(prediction['boxes'], prediction['scores'], prediction['keypoints']):
             score = score.cpu().detach().numpy()
             if score < THRESHOLD:
@@ -70,7 +71,9 @@ def main():
             for key in keypoints:
                 for k in key:
                     keys.append(k)
-            images_dic.append(making_images_dic(i, file_name, size))
+            if not i in images_id:
+                images_dic.append(making_images_dic(i, file_name, size))
+                images_id.add(i)
             annotations_dic.append(
                 making_annotations_dic(annotation_id, i, keys, box))
             annotation_id += 1
