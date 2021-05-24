@@ -5,6 +5,7 @@ from torchvision import transforms
 from PIL import Image
 import numpy as np
 import json
+from glob import glob
 from utils import making_annotations_dic, making_images_dic, making_json
 
 THRESHOLD = 0.95
@@ -17,16 +18,16 @@ def main():
     if torch.cuda.is_available():
         model.cuda()
 
-    main_dir = 'data/images/'
-    file_list = os.listdir(main_dir)
+    main_dir = '/Volumes/SSD_250G/golfDB/image_data/good/front/image/swing015/'
+    files_dir = glob(main_dir + '*.png')
 
     images_dic = []
     annotations_dic = []
 
     annotation_id = 10000
 
-    for i, file_name in enumerate(file_list):
-        data = Image.open(main_dir + file_name)
+    for i, file_name in enumerate(files_dir):
+        data = Image.open(file_name)
         transform = transforms.ToTensor()
         data = transform(data)
         if torch.cuda.is_available():
@@ -55,32 +56,12 @@ def main():
             top = neck.copy()
             top[1] = keypoints[0][1] - (neck[1] - keypoints[0][1]) * 1
 
-            if ((top[0] - keypoints[0].astype(int)[0])**2 + (top[1] - keypoints[0].astype(int)[1])**2)**(1/2) > 70:
-                top[1] = top[1] + 4
-            # 왼쪽 발끝, 발뒷꿈치
-            L_toe = keypoints[16].astype(int).copy()
-            L_toe[0] = keypoints[16].astype(int)[0] - 25
-            L_toe[1] = keypoints[16].astype(int)[1] + 20
-            L_heal = keypoints[16].astype(int).copy()
-            L_heal[0] = keypoints[16].astype(int)[0] + 25
-            L_heal[1] = keypoints[16].astype(int)[1] + 20
-
-            # 오른쪽 발끝, 발뒷꿈치
-            R_toe = keypoints[15].astype(int).copy()
-            R_toe[0] = keypoints[15].astype(int)[0] + 25
-            R_toe[1] = keypoints[15].astype(int)[1] + 20
-            R_heal = keypoints[15].astype(int).copy()
-            R_heal[0] = keypoints[15].astype(int)[0] - 25
-            R_heal[1] = keypoints[15].astype(int)[1] + 20
-            # Golf club head
-            Golf_Club = keypoints[15].astype(int).copy() + 70
-
             keypoints = np.array([top, keypoints[0], neck, chest,
                                   keypoints[6], keypoints[8], keypoints[10],
                                   keypoints[5], keypoints[7], keypoints[9],
                                   keypoints[11], keypoints[13], keypoints[15],
                                   keypoints[12], keypoints[14], keypoints[16],
-                                  L_toe, L_heal, R_toe, R_heal, Golf_Club
+                                  keypoints[1], keypoints[2], keypoints[3], keypoints[4], keypoints[0]
                                   ]).tolist()
 
             width = data.shape[1]
