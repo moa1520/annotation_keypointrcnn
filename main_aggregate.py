@@ -5,6 +5,7 @@ from torchvision import transforms
 from PIL import Image
 import numpy as np
 import json
+from glob import glob
 from utils import making_annotations_dic, making_images_dic, making_json
 
 THRESHOLD = 0.95
@@ -17,16 +18,16 @@ def main():
     if torch.cuda.is_available():
         model.cuda()
 
-    main_dir = 'data/images/'
-    file_list = os.listdir(main_dir)
+    main_dir = '/media/tk/SSD_250G/golfDB/image_data/good/front/image/swing050/'
+    files_dir = glob(main_dir + '*.png')
 
     images_dic = []
     annotations_dic = []
 
     annotation_id = 10000
 
-    for i, file_name in enumerate(file_list):
-        data = Image.open(main_dir + file_name)
+    for i, file_name in enumerate(files_dir):
+        data = Image.open(file_name)
         transform = transforms.ToTensor()
         data = transform(data)
         if torch.cuda.is_available():
@@ -72,6 +73,7 @@ def main():
             R_heal = keypoints[15].astype(int).copy()
             R_heal[0] = keypoints[15].astype(int)[0] - 25
             R_heal[1] = keypoints[15].astype(int)[1] + 20
+
             # Golf club head
             Golf_Club = keypoints[15].astype(int).copy() + 70
 
@@ -92,7 +94,8 @@ def main():
                 for k in key:
                     keys.append(k)
             if not i in images_id:
-                images_dic.append(making_images_dic(i, file_name, size))
+                images_dic.append(making_images_dic(
+                    i, file_name.split('/')[-1], size))
                 images_id.add(i)
             annotations_dic.append(
                 making_annotations_dic(annotation_id, i, keys, box))

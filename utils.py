@@ -3,13 +3,13 @@ import datetime
 
 def making_images_dic(id, file_name, size):
     out = {
-        "coco_url": "http://localhost:8007/images/" + file_name,
+        "coco_url": "http://localhost:8007/" + file_name,
         "license": 1,
         "file_name": file_name,
         "height": size[0],
         "width": size[1],
         "date_captured": str(datetime.datetime.now()),
-        "flicker_url": "http://localhost:8007/images/" + file_name,
+        "flicker_url": "http://localhost:8007/" + file_name,
         "id": id
     }
     return out
