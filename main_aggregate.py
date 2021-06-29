@@ -18,7 +18,7 @@ def main():
     if torch.cuda.is_available():
         model.cuda()
 
-    main_dir = '/media/tk/SSD_250G/golfDB/image_data/good/front/image/swing050/'
+    main_dir = '/Volumes/SSD_250G/tk_unlabeled_videos/front_8_frames/f_00001/'
     files_dir = glob(main_dir + '*.png')
 
     images_dic = []
