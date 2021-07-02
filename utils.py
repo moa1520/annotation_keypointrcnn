@@ -37,9 +37,9 @@ def making_json(images, annotations):
         "annotations": annotations,
         "categories": [
             {
-                "supercategory": "person",
+                "supercategory": "person_bb",
                 "id": 1,
-                "name": "person",
+                "name": "person_bb",
                 "keypoints": [
                     "Top Head",
                     "Nose",
@@ -141,7 +141,18 @@ def making_json(images, annotations):
                     #     7
                     # ]
                 ]
-            }]
+            },
+            {
+                "supercategory": "club_bb",
+                "id": 2,
+                "name": "club_bb",
+            },
+            {
+                "supercategory": "ball_bb",
+                "id": 3,
+                "name": "ball_bb"
+            }
+        ]
     }
 
     return out

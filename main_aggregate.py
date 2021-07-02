@@ -7,6 +7,7 @@ import numpy as np
 import json
 from glob import glob
 from utils import making_annotations_dic, making_images_dic, making_json
+from tqdm import tqdm
 
 THRESHOLD = 0.95
 
@@ -18,8 +19,8 @@ def main():
     if torch.cuda.is_available():
         model.cuda()
 
-    root = '/Volumes/SSD_250G/tk_unlabeled_videos/front_20_frames/'
-    for folder_name in sorted(os.listdir(root)):
+    root = '/media/tk/SSD_250G/tk_unlabeled_videos/front_20_frames'
+    for folder_name in tqdm(sorted(os.listdir(root))):
         main_dir = os.path.join(root, folder_name)
 
         files_dir = glob(main_dir + '/*.png')
@@ -110,8 +111,8 @@ def main():
 
         out = making_json(images_dic, annotations_dic)
 
-        # with open('./json/{}.json'.format(folder_name), 'w') as outfile:
-        #     json.dump(out, outfile)
+        with open('./front_json/{}.json'.format(folder_name), 'w') as outfile:
+            json.dump(out, outfile)
 
 
 if __name__ == '__main__':
