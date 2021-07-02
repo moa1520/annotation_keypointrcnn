@@ -146,11 +146,15 @@ def making_json(images, annotations):
                 "supercategory": "club_bb",
                 "id": 2,
                 "name": "club_bb",
+                "keypoints": [],
+                "keypoints_style": []
             },
             {
                 "supercategory": "ball_bb",
                 "id": 3,
-                "name": "ball_bb"
+                "name": "ball_bb",
+                "keypoints": [],
+                "keypoints_style": []
             }
         ]
     }
