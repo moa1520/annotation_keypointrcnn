@@ -107,8 +107,8 @@ def main():
 
         out = making_json(images_dic, annotations_dic)
 
-        with open('./json/{}.json'.format(folder_name), 'w') as outfile:
-            json.dump(out, outfile)
+        # with open('./json/{}.json'.format(folder_name), 'w') as outfile:
+        #     json.dump(out, outfile)
 
 
 if __name__ == '__main__':
