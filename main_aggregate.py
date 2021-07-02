@@ -79,7 +79,9 @@ def main():
                 R_heal[1] = keypoints[15].astype(int)[1] + 20
 
                 # Golf club head
-                Golf_Club = keypoints[15].astype(int).copy() + 70
+                Golf_Club = keypoints[15].astype(int).copy()
+                Golf_Club[0] = keypoints[15].astype(int)[0].copy() + 70
+                Golf_Club[1] = keypoints[15].astype(int)[1].copy() + 70
 
                 keypoints = np.array([top, keypoints[0], neck, chest,
                                       keypoints[6], keypoints[8], keypoints[10],
@@ -95,6 +97,7 @@ def main():
 
                 keys = []
                 for key in keypoints:
+                    key[2] += 1
                     for k in key:
                         keys.append(k)
                 if not i in images_id:
