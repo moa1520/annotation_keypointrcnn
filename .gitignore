@@ -3,4 +3,4 @@ test.py
 *.json
 .vscode
 .DS_Store
-front_json
+*_json

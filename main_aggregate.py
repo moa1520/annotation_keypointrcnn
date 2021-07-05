@@ -19,7 +19,7 @@ def main():
     if torch.cuda.is_available():
         model.cuda()
 
-    root = '/media/tk/SSD_250G/tk_unlabeled_videos/back_20_frames'
+    root = '/media/tk/SSD_250G/tk_unlabeled_videos/front_20_frames'
     for folder_name in tqdm(sorted(os.listdir(root))):
         main_dir = os.path.join(root, folder_name)
 
